@@ -9,6 +9,7 @@ import com.hcl.transaction.enums.ApiStatus;
 import com.hcl.transaction.repository.AccountDetailsRepository;
 import com.hcl.transaction.repository.TransactionStatementRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -19,19 +20,23 @@ import java.util.UUID;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class TransferServiceImpl implements  TransferService {
 
     private final AccountDetailsRepository accountDetailsRepository;
     private final TransactionStatementRepository statementRepository;
 
     public TransferResponse transferFund(Long id,TransferRequest transferRequest) {
+        log.info("Fund Transfer Api Called with input {}", transferRequest);
         TransferResponse transferResponse = new TransferResponse();
         transferResponse.setStatus(ApiStatus.SUCCESS);
         transferResponse.setComment(ApiStatus.SUCCESS.name());
         List<AccountDetails> customerDetails = accountDetailsRepository.findByCustomerId(id);
         if(CollectionUtils.isEmpty(customerDetails)){
+            String comment = "No Source account linked with the customer id";
+            log.error(comment);
             transferResponse.setStatus(ApiStatus.FAILURE);
-            transferResponse.setComment("No Source account linked with the customer id");
+            transferResponse.setComment(comment);
         }else{
             Optional<AccountDetails> optionalAccountDetails = customerDetails.stream().filter(cust -> cust.getAccountNumber().longValue() == transferRequest.getFromAccountNumber().longValue()).findAny();
             if(optionalAccountDetails.isPresent()){
@@ -52,13 +57,16 @@ public class TransferServiceImpl implements  TransferService {
         AccountDetails sourceAcc = accountDetailsRepository.findByAccountNumber(transferRequest.getFromAccountNumber()).get();
         sourceAcc.setBalance(sourceAcc.getBalance() - transferRequest.getAmount());
         accountDetailsRepository.save(sourceAcc);
+        log.info("Amount deducted from source account");
         AccountDetails destAcc = accountDetailsRepository.findByAccountNumber(transferRequest.getToAccountNumber()).get();
         destAcc.setBalance(destAcc.getBalance() + transferRequest.getAmount());
         accountDetailsRepository.save(destAcc);
+        log.info("Amount added to dest account");
         String transactionid = String.valueOf(UUID.randomUUID());
 
         //save log transaction details
         saveTransactionDetails(transferRequest,transactionid);
+        log.info("Transction detail logged on statement table with transction id {}",transactionid);
         return transactionid;
     }
 
@@ -97,6 +105,7 @@ public class TransferServiceImpl implements  TransferService {
                 }
             }
         }
+        log.info(comment);
         transferResponse.setStatus(apiStatus);
         transferResponse.setComment(comment);
     }

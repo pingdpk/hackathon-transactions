@@ -9,8 +9,8 @@ import java.util.List;
 
 @Repository
 public interface TransactionStatementRepository extends JpaRepository<TransactionStatement, String> {
-    @Query("select * from TransactionStatement where fromAccountId = ? union select * from TransactionStatement where toAccountId = ?'")
+    /*@Query("select * from TransactionStatement where fromAccountId = ? union select * from TransactionStatement where toAccountId = ?'")
     List<TransactionStatement> findByAccountId(Long accountId);
     List<TransactionStatement> findByFromAccountId(Long accountId);
-    List<TransactionStatement> findByToAccountId(Long accountId);
+    List<TransactionStatement> findByToAccountId(Long accountId);*/
 }
