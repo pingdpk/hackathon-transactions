@@ -26,6 +26,9 @@ public class TransactionStatement {
     @Column(name = "to_account", nullable = false)
     Long toAccount;
 
+    @Column(name = "amount", nullable = false)
+    Double amount;
+
     @Column(name = "date", nullable = false)
     Date date;
 
