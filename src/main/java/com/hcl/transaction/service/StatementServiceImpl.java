@@ -1,3 +1,4 @@
+
 package com.hcl.transaction.service;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public class StatementServiceImpl implements StatementService {
 
     @Override
     public List<TransactionStatementResponse> getTransactions(Long customerId, Long accountId) {
-        List<TransactionStatement> withdrawntransactions = transactionStatementRepository.findByFromAccountId(accountId);
+        /*List<TransactionStatement> withdrawntransactions = transactionStatementRepository.findByFromAccountId(accountId);
         List<TransactionStatement> depositedTransactions = transactionStatementRepository.findByToAccountId(accountId);
         List<TransactionStatementResponse> withdrawStatements =  withdrawntransactions.stream().map(transaction -> {
             return new TransactionStatementResponse(transaction.getRemark(), 
@@ -36,8 +37,10 @@ public class StatementServiceImpl implements StatementService {
 
         withdrawStatements.addAll(depositeStatements);
         withdrawStatements.sort((a,b) -> a.getDate().compareTo(b.getDate()));
-        return withdrawStatements;
+        return withdrawStatements;*/
+        return null;
     }
 
 
 }
+
