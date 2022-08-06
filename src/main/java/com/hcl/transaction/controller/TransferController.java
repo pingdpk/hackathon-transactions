@@ -4,7 +4,6 @@ import com.hcl.transaction.dto.TransferRequest;
 import com.hcl.transaction.dto.TransferResponse;
 import com.hcl.transaction.service.TransferServiceImpl;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

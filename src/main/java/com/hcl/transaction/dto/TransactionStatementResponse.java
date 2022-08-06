@@ -1,7 +1,5 @@
 package com.hcl.transaction.dto;
 
-import com.fasterxml.jackson.annotation.JsonClassDescription;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

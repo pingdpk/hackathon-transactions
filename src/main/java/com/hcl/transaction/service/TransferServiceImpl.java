@@ -3,33 +3,35 @@ package com.hcl.transaction.service;
 import com.hcl.transaction.dto.TransferRequest;
 import com.hcl.transaction.dto.TransferResponse;
 import com.hcl.transaction.entity.AccountDetails;
+import com.hcl.transaction.entity.TransactionStatement;
 import com.hcl.transaction.enums.AccountStatus;
 import com.hcl.transaction.enums.ApiStatus;
 import com.hcl.transaction.repository.AccountDetailsRepository;
-import lombok.RequiredArgsConstructor;
+import com.hcl.transaction.repository.TransactionStatementRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class TransferServiceImpl implements  TransferService {
 
     private final AccountDetailsRepository accountDetailsRepository;
+    private final TransactionStatementRepository statementRepository;
 
     public TransferResponse transferFund(Long id,TransferRequest transferRequest) {
         TransferResponse transferResponse = new TransferResponse();
+        transferResponse.setStatus(ApiStatus.SUCCESS);
+        transferResponse.setComment(ApiStatus.SUCCESS.name());
         List<AccountDetails> customerDetails = accountDetailsRepository.findByCustomerId(id);
-        ApiStatus apiStatus = ApiStatus.SUCCESS;
-        String comment = ApiStatus.SUCCESS.name();
         if(CollectionUtils.isEmpty(customerDetails)){
-           apiStatus = ApiStatus.FAILURE;
-            comment = "No Source account linked with the customer id";
+            transferResponse.setStatus(ApiStatus.FAILURE);
+            transferResponse.setComment("No Source account linked with the customer id");
         }else{
             Optional<AccountDetails> optionalAccountDetails = customerDetails.stream().filter(cust -> cust.getAccountNumber().longValue() == transferRequest.getFromAccountNumber().longValue()).findAny();
             if(optionalAccountDetails.isPresent()){
@@ -37,16 +39,11 @@ public class TransferServiceImpl implements  TransferService {
                 if(ApiStatus.SUCCESS.equals(transferResponse.getStatus())){
                     String transactionid = processFundTransfer(transferRequest);
                     transferResponse.setTransctionId(transactionid);
-                    transferResponse.setDate(String.valueOf(LocalDate.now()));
+                    transferResponse.setDate(transferRequest.getTransferDate());
                 }
-            }else{
-                apiStatus = ApiStatus.FAILURE;
-                comment = "Invalid Source Account details";
             }
         }
 
-        transferResponse.setStatus(apiStatus);
-        transferResponse.setComment(comment);
         return transferResponse;
     }
 
@@ -61,7 +58,18 @@ public class TransferServiceImpl implements  TransferService {
         String transactionid = String.valueOf(UUID.randomUUID());
 
         //save log transaction details
+        saveTransactionDetails(transferRequest,transactionid);
         return transactionid;
+    }
+
+    private void saveTransactionDetails(TransferRequest request, String transactionId) {
+        TransactionStatement transactionStatement = new TransactionStatement();
+        transactionStatement.setTransactionId(transactionId);
+        transactionStatement.setFromAccount(request.getFromAccountNumber());
+        transactionStatement.setToAccount(request.getToAccountNumber());
+        transactionStatement.setDate(request.getTransferDate());
+        transactionStatement.setDescription(request.getComment());
+        statementRepository.save(transactionStatement);
     }
 
     private void validateTransferDetails(AccountDetails accountDetails, TransferRequest transferRequest, TransferResponse transferResponse) {

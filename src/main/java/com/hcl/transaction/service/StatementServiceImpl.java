@@ -1,9 +1,8 @@
 package com.hcl.transaction.service;
 
+import com.hcl.transaction.repository.TransactionStatementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.hcl.transaction.repository.TransactionStatementRepository;
 
 @Service
 public class StatementServiceImpl {

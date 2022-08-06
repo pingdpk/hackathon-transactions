@@ -1,11 +1,11 @@
 package com.hcl.transaction.repository;
 
-import java.util.List;
-
+import com.hcl.transaction.entity.TransactionStatement;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import com.hcl.transaction.entity.TransactionStatement;
+
+import java.util.List;
 
 @Repository
 public interface TransactionStatementRepository extends JpaRepository<TransactionStatement, String> {

@@ -4,6 +4,7 @@ import com.hcl.transaction.enums.ApiStatus;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.sql.Date;
 
 @Data
 public class TransferResponse implements Serializable {
@@ -11,5 +12,5 @@ public class TransferResponse implements Serializable {
     String description;
     String transctionId;
     String comment;
-    String date;
+    Date date;
 }
