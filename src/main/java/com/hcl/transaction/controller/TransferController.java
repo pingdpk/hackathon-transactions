@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController("/transfer")
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class TransferController {
 
     private final TransferServiceImpl transferService;
