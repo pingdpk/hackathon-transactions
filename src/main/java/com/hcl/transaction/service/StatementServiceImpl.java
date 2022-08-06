@@ -34,7 +34,6 @@ public class StatementServiceImpl implements StatementService {
             "deposite",
             transaction.getDate());
         }).collect(Collectors.toList());
-
         withdrawStatements.addAll(depositeStatements);
         withdrawStatements.sort((a,b) -> a.getDate().compareTo(b.getDate()));
         return withdrawStatements;*/

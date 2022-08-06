@@ -17,9 +17,9 @@ public class TransactionStatementController {
     private final StatementService statementService;
 
     @GetMapping("/{customerid}")
-    public List<TransactionStatementResponse> getStatmentPerAccount(@PathVariable Long customerId, 
-    @RequestParam Long accountId){
+    public List<TransactionStatementResponse> getStatmentPerAccount(@PathVariable Long customerId,
+            @RequestParam Long accountId) {
         return statementService.getTransactions(customerId, accountId);
-}
+    }
 }
 
